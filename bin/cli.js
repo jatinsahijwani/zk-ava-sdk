@@ -22,9 +22,10 @@ program
 
   program
   .command('deploy <folder> <privateKey>')
-  .description('Deploy verifier.sol in folder to Avalanche using provided private key')
-  .action((folder, privateKey) => {
-    deployVerifier(folder, privateKey);
+  .description('Deploy verifier.sol in folder to Avalanche (Fuji by default, --mainnet for C-Chain)')
+  .option('--mainnet', 'Deploy to Avalanche C-Chain mainnet instead of Fuji testnet')
+  .action((folder, privateKey, options) => {
+    deployVerifier(folder, privateKey, { mainnet: !!options.mainnet });
   });
 
 

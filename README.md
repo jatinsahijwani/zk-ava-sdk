@@ -55,14 +55,23 @@ This command:
 
 ### ✅ Deploy Compiled Circom Circuit
 
+Deploy to **Avalanche Fuji testnet** (default):
+
 ```bash
 npx zk-ava-sdk deploy <path-to-generated-folder> <PRIVATE_KEY_OF_WALLET>
+```
+
+Deploy to **Avalanche C-Chain mainnet** with the `--mainnet` flag:
+
+```bash
+npx zk-ava-sdk deploy --mainnet <path-to-generated-folder> <PRIVATE_KEY_OF_WALLET>
 ```
 
 This command:
 
 - Compiles verifier.sol generated during compilation using solc
-- Deploys the compiled binary to Avalanche, taking fees from the provided wallet's private key
+- Deploys the compiled binary to Avalanche (Fuji by default, mainnet with `--mainnet`), taking fees from the provided wallet's private key
+- Persists the chosen network into `deployment.json`, so `verifyProof` automatically uses the correct RPC
 
 
 ### ✅ Verify ZK Proof Programmatically
@@ -95,7 +104,7 @@ console.log(result ? "✅ Valid proof" : "❌ Invalid proof");
 |----------------------------------------------|--------------------------------------------------|
 | `npx zk-ava-sdk compile <path-to-circuit>` | Compiles the `.circom` file and runs Groth16 setup |
 | `npx zk-ava-sdk test <output-folder> <path-to-input.json>` | Tests the Circom logic locally using ZK Proofs        |
-| `npx zk-ava-sdk deploy <output-folder> <private-key>` | Deploys the verifier contract to Avalanche        |
+| `npx zk-ava-sdk deploy [--mainnet] <output-folder> <private-key>` | Deploys the verifier contract to Avalanche (Fuji by default; pass `--mainnet` for C-Chain mainnet) |
 | `verifyProof(input,"<relative-path-to-output-folder>")` *(programmatic only)* | Generates proof and verifies it on-chain using deployed contract |
 
 
