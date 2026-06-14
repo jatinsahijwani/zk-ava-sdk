@@ -1,0 +1,9 @@
+root: ./docs/
+
+structure:
+  readme: README.md
+  summary: SUMMARY.md
+
+# Reserve redirects for future page moves so published URLs stay stable.
+# redirects:
+#   old/path: new/path.md
