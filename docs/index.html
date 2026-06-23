@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>zk-ava-sdk · Documentation</title>
+  <meta name="description" content="Write Circom. Compile. Deploy. Verify — zero-knowledge proofs on Avalanche, in one click." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+  <meta name="theme-color" content="#e84142" />
+
+  <!-- Docsify theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" />
+  <!-- Callout (hint) styling -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-plugin-flexible-alerts/dist/docsify-plugin-flexible-alerts.min.css" />
+
+  <style>
+    :root {
+      --theme-color: #e84142;            /* Avalanche red */
+      --theme-color-dark: #b00;
+      --base-font-size: 16px;
+      --content-max-width: 60em;
+    }
+    /* Brand the sidebar logo */
+    .app-name-link { font-weight: 700; }
+    .sidebar .app-name { margin-top: 14px; }
+    .sidebar-nav strong { color: var(--theme-color); font-size: 0.78rem;
+      text-transform: uppercase; letter-spacing: 0.06em; }
+    /* Mermaid diagrams: center and constrain */
+    .mermaid { text-align: center; margin: 1.4em 0; }
+    .mermaid svg { max-width: 100%; height: auto; }
+    /* Nicer code blocks */
+    .markdown-section pre { border-radius: 8px; }
+    /* Cover page tweaks */
+    section.cover .cover-main > p:last-child a { border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <div id="app">Loading the docs…</div>
+
+  <script>
+    window.$docsify = {
+      name: 'zk-ava-sdk',
+      repo: 'https://github.com/jatinsahijwani/zk-ava-sdk',
+      homepage: 'README.md',
+
+      // Navigation
+      loadSidebar: true,
+      subMaxLevel: 2,
+      auto2top: true,
+      maxLevel: 4,
+
+      // Cover / landing page
+      coverpage: true,
+      onlyCover: false,
+
+      // Resolve the GitBook-style relative ".md" links inside pages.
+      relativePath: true,
+      // …but keep ONE sidebar/cover for every nested route.
+      alias: {
+        '/.*/_sidebar.md': '/_sidebar.md',
+        '/.*/_coverpage.md': '/_coverpage.md'
+      },
+
+      // Full-text search
+      search: {
+        placeholder: 'Search the docs…',
+        noData: 'No results found.',
+        depth: 4
+      },
+
+      // Copy-to-clipboard on code blocks
+      copyCode: {
+        buttonText: 'Copy',
+        successText: 'Copied'
+      },
+
+      // Render ```mermaid fenced blocks as live diagrams
+      markdown: {
+        renderer: {
+          code: function (code, lang) {
+            if ((lang || '').trim() === 'mermaid') {
+              return '<div class="mermaid">' + code + '</div>';
+            }
+            return this.origin.code.apply(this, arguments);
+          }
+        }
+      },
+
+      plugins: [
+        // 1) Normalise GitBook syntax that GitHub Pages / Jekyll cannot render.
+        function (hook) {
+          hook.beforeEach(function (content) {
+            // Strip leading YAML front-matter (--- ... ---)
+            content = content.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, '');
+
+            // Convert {% hint style="x" %}...{% endhint %} -> flexible-alerts callouts
+            var kindFor = { info: 'NOTE', tip: 'TIP', success: 'TIP', warning: 'WARNING', danger: 'CAUTION' };
+            content = content.replace(
+              /{%\s*hint\s+style="(\w+)"\s*%}([\s\S]*?){%\s*endhint\s*%}/g,
+              function (_match, style, body) {
+                var kind = kindFor[style] || 'NOTE';
+                var quoted = body.trim().split(/\r?\n/).map(function (line) {
+                  return '> ' + line;
+                }).join('\n');
+                return '> [!' + kind + ']\n' + quoted + '\n';
+              }
+            );
+
+            // Drop any other stray {% ... %} GitBook tags so they don't show as text.
+            content = content.replace(/{%[^%]*%}/g, '');
+
+            return content;
+          });
+        },
+        // 2) Render mermaid diagrams after each page paint.
+        function (hook) {
+          hook.doneEach(function () {
+            if (window.mermaid) {
+              try {
+                window.mermaid.run({ querySelector: '.mermaid' });
+              } catch (e) { /* diagram already rendered */ }
+            }
+          });
+        }
+      ]
+    };
+  </script>
+
+  <!-- Docsify core -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
+  <!-- Plugins -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-pagination@2/dist/docsify-pagination.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-plugin-flexible-alerts/dist/docsify-plugin-flexible-alerts.min.js"></script>
+  <!-- Syntax highlighting for the languages used in the docs -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-solidity.min.js"></script>
+  <!-- Mermaid -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    if (window.mermaid) {
+      window.mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' });
+    }
+  </script>
+</body>
+</html>
